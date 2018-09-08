@@ -17,10 +17,18 @@ We are highly recommend to dive in and understand the purpose and mechanisms of 
 [Understanding OpenID Connect Part 1](https://medium.com/@robert.broeckelmann/saml2-vs-jwt-understanding-openid-connect-part-1-fffe0d50f953)
 [Understanding OpenID Connect Part 2](https://medium.com/@robert.broeckelmann/saml2-vs-jwt-understanding-openid-connect-part-2-f361ca867baa)
 [Understanding OpenID Connect Part 3](https://medium.com/@robert.broeckelmann/saml2-vs-jwt-understanding-openid-connect-part-3-b81c5aa9bc20)
+[Bootstrap ORY Hydra](https://www.ibm.com/developerworks/library/se-bootstrap-hydra-oauth2/index.html)
 
 ## Components structure
 
 ![components structure](https://raw.githubusercontent.com/MadAppGang/identifo/master/docs/structure.png)
+
+## Motivation
+
+Every application requires authentication and authorization. Although there are a lot of solutions on the market, we were not able to create our own.
+
+Proper secure authentication process require a lot of developer resources, so we decided to create "10 minutes ready to go" service. We assume you want to use this service as the Authentication endpoint for your project. And you are not going to use this service as SSO or
+
 
 ## Token
 
