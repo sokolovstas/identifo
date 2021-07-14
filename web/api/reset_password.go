@@ -7,6 +7,7 @@ import (
 	"path"
 
 	"github.com/madappgang/identifo/model"
+	"github.com/madappgang/identifo/web/middleware"
 )
 
 // RequestResetPassword requests password reset
@@ -45,7 +46,13 @@ func (ar *Router) RequestResetPassword() http.HandlerFunc {
 			return
 		}
 
-		query := fmt.Sprintf("token=%s", resetTokenString)
+		app := middleware.AppFromContext(r.Context())
+		if len(app.ID) == 0 {
+			ar.Error(w, ErrorAPIRequestAppIDInvalid, http.StatusInternalServerError, "App is not in context.", "RequestResetPassword.AppFromContext")
+			return
+		}
+
+		query := fmt.Sprintf("appId=%s&token=%s", app.ID, resetTokenString)
 
 		host, err := url.Parse(ar.Host)
 		if err != nil {
@@ -96,7 +103,7 @@ func (ar *Router) ResetPassword() http.HandlerFunc {
 
 		accessTokenBytes, ok := r.Context().Value(model.TokenRawContextKey).([]byte)
 		if !ok {
-			ar.Error(w, ErrorAPIRequestAppIDInvalid, http.StatusBadRequest, "Token bytes are not in context.", "ResetPassword.TokenBytesFromContext")
+			ar.Error(w, ErrorAPIRequestTokenInvalid, http.StatusBadRequest, "Token bytes are not in context.", "ResetPassword.TokenBytesFromContext")
 			return
 		}
 
