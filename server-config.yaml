@@ -60,6 +60,7 @@ login:
   loginWith:
     username: true
     phone: true
+    email: true
     federated: true
   tfaType: app
 keyStorage:

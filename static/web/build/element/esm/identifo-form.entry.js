@@ -143,10 +143,10 @@ class Api {
       });
     });
   }
-  login(username, password, deviceToken, scopes) {
+  login(email, password, deviceToken, scopes) {
     return __async$2(this, null, function* () {
       const data = {
-        username,
+        email,
         password,
         device_token: deviceToken,
         scopes
@@ -154,11 +154,12 @@ class Api {
       return this.post("/auth/login", data).then((r) => this.storeToken(r));
     });
   }
-  register(username, password) {
+  register(email, password, scopes) {
     return __async$2(this, null, function* () {
       const data = {
-        username,
-        password
+        email,
+        password,
+        scopes
       };
       return this.post("/auth/register", data).then((r) => this.storeToken(r));
     });
@@ -645,18 +646,18 @@ const IdentifoForm = class {
   }
   async signIn() {
     await this.auth.api
-      .login(this.username, this.password, '', [''])
+      .login(this.email, this.password, '', this.scopes.split(','))
       .then(this.afterLoginRedirect)
       .catch(this.loginCatchRedirect)
       .then(route => this.openRoute(route))
       .catch(e => this.processError(e));
   }
   async signUp() {
-    if (!this.validateEmail(this.username)) {
+    if (!this.validateEmail(this.email)) {
       return;
     }
     await this.auth.api
-      .register(this.username, this.password)
+      .register(this.email, this.password, this.scopes.split(','))
       .then(this.afterLoginRedirect)
       .catch(this.loginCatchRedirect)
       .then(route => this.openRoute(route))
@@ -741,9 +742,9 @@ const IdentifoForm = class {
     var _a, _b, _c, _d, _e, _f;
     switch (route) {
       case 'login':
-        return (h("div", { class: "login-form" }, h("p", { class: "login-form__register-text" }, "Don't have an account?", h("a", { onClick: () => this.openRoute('register'), class: "login-form__register-link" }, ' ', "Sign Up")), h("input", { type: "text", class: `form-control ${this.lastError && 'form-control-danger'}`, id: "floatingInput", value: this.username, placeholder: "Email", onInput: event => this.usernameChange(event), onKeyPress: e => !!(e.key === 'Enter' && this.username && this.password) && this.signIn() }), h("input", { type: "password", class: `form-control ${this.lastError && 'form-control-danger'}`, id: "floatingPassword", value: this.password, placeholder: "Password", onInput: event => this.passwordChange(event), onKeyPress: e => !!(e.key === 'Enter' && this.username && this.password) && this.signIn() }), !!this.lastError && (h("div", { class: "error", role: "alert" }, (_a = this.lastError) === null || _a === void 0 ? void 0 : _a.detailedMessage)), h("div", { class: `login-form__buttons ${!!this.lastError ? 'login-form__buttons_mt-32' : ''}` }, h("button", { onClick: () => this.signIn(), class: "primary-button", disabled: !this.username || !this.password }, "Login"), h("a", { onClick: () => this.openRoute('password/forgot'), class: "login-form__forgot-pass" }, "Forgot password")), h("div", { class: "social-buttons" }, h("p", { class: "social-buttons__text" }, "or continue with"), h("div", { class: "social-buttons__social-medias" }, h("div", { class: "social-buttons__media" }, h("img", { src: getAssetPath(`assets/images/${'apple.svg'}`), class: "social-buttons__image", alt: "login via apple" })), h("div", { class: "social-buttons__media" }, h("img", { src: getAssetPath(`assets/images/${'google.svg'}`), class: "social-buttons__image", alt: "login via google" })), h("div", { class: "social-buttons__media" }, h("img", { src: getAssetPath(`assets/images/${'fb.svg'}`), class: "social-buttons__image", alt: "login via facebook" }))))));
+        return (h("div", { class: "login-form" }, h("p", { class: "login-form__register-text" }, "Don't have an account?", h("a", { onClick: () => this.openRoute('register'), class: "login-form__register-link" }, ' ', "Sign Up")), h("input", { type: "text", class: `form-control ${this.lastError && 'form-control-danger'}`, id: "floatingInput", value: this.email, placeholder: "Email", onInput: event => this.emailChange(event), onKeyPress: e => !!(e.key === 'Enter' && this.email && this.password) && this.signIn() }), h("input", { type: "password", class: `form-control ${this.lastError && 'form-control-danger'}`, id: "floatingPassword", value: this.password, placeholder: "Password", onInput: event => this.passwordChange(event), onKeyPress: e => !!(e.key === 'Enter' && this.email && this.password) && this.signIn() }), !!this.lastError && (h("div", { class: "error", role: "alert" }, (_a = this.lastError) === null || _a === void 0 ? void 0 : _a.detailedMessage)), h("div", { class: `login-form__buttons ${!!this.lastError ? 'login-form__buttons_mt-32' : ''}` }, h("button", { onClick: () => this.signIn(), class: "primary-button", disabled: !this.email || !this.password }, "Login"), h("a", { onClick: () => this.openRoute('password/forgot'), class: "login-form__forgot-pass" }, "Forgot password")), h("div", { class: "social-buttons" }, h("p", { class: "social-buttons__text" }, "or continue with"), h("div", { class: "social-buttons__social-medias" }, h("div", { class: "social-buttons__media" }, h("img", { src: getAssetPath(`assets/images/${'apple.svg'}`), class: "social-buttons__image", alt: "login via apple" })), h("div", { class: "social-buttons__media" }, h("img", { src: getAssetPath(`assets/images/${'google.svg'}`), class: "social-buttons__image", alt: "login via google" })), h("div", { class: "social-buttons__media" }, h("img", { src: getAssetPath(`assets/images/${'fb.svg'}`), class: "social-buttons__image", alt: "login via facebook" }))))));
       case 'register':
-        return (h("div", { class: "register-form" }, h("input", { type: "text", class: `form-control ${this.lastError && 'form-control-danger'}`, id: "floatingInput", value: this.username, placeholder: "Email", onInput: event => this.usernameChange(event), onKeyPress: e => !!(e.key === 'Enter' && this.password && this.username) && this.signUp() }), h("input", { type: "password", class: `form-control ${this.lastError && 'form-control-danger'}`, id: "floatingPassword", value: this.password, placeholder: "Password", onInput: event => this.passwordChange(event), onKeyPress: e => !!(e.key === 'Enter' && this.password && this.username) && this.signUp() }), !!this.lastError && (h("div", { class: "error", role: "alert" }, (_b = this.lastError) === null || _b === void 0 ? void 0 : _b.detailedMessage)), h("div", { class: `register-form__buttons ${!!this.lastError ? 'register-form__buttons_mt-32' : ''}` }, h("button", { onClick: () => this.signUp(), class: "primary-button", disabled: !this.username || !this.password }, "Continue"), h("a", { onClick: () => this.openRoute('login'), class: "register-form__log-in" }, "Go back to login"))));
+        return (h("div", { class: "register-form" }, h("input", { type: "text", class: `form-control ${this.lastError && 'form-control-danger'}`, id: "floatingInput", value: this.email, placeholder: "Email", onInput: event => this.emailChange(event), onKeyPress: e => !!(e.key === 'Enter' && this.password && this.email) && this.signUp() }), h("input", { type: "password", class: `form-control ${this.lastError && 'form-control-danger'}`, id: "floatingPassword", value: this.password, placeholder: "Password", onInput: event => this.passwordChange(event), onKeyPress: e => !!(e.key === 'Enter' && this.password && this.email) && this.signUp() }), !!this.lastError && (h("div", { class: "error", role: "alert" }, (_b = this.lastError) === null || _b === void 0 ? void 0 : _b.detailedMessage)), h("div", { class: `register-form__buttons ${!!this.lastError ? 'register-form__buttons_mt-32' : ''}` }, h("button", { onClick: () => this.signUp(), class: "primary-button", disabled: !this.email || !this.password }, "Continue"), h("a", { onClick: () => this.openRoute('login'), class: "register-form__log-in" }, "Go back to login"))));
       case 'otp/login':
         return (h("div", { class: "otp-login" }, h("p", { class: "otp-login__register-text" }, "Don't have an account?", h("a", { onClick: () => this.openRoute('register'), class: "login-form__register-link" }, ' ', "Sign Up")), h("input", { type: "phone", class: "form-control", id: "floatingInput", value: this.phone, placeholder: "Phone number", onInput: event => this.phoneChange(event) }), h("button", { onClick: () => this.openRoute('tfa/verify'), class: "primary-button", disabled: !this.phone }, "Continue"), h("div", { class: "social-buttons" }, h("p", { class: "social-buttons__text" }, "or continue with"), h("div", { class: "social-buttons__social-medias" }, h("div", { class: "social-buttons__media" }, h("img", { src: getAssetPath(`./assets/images/${'apple.svg'}`), class: "social-buttons__image", alt: "login via apple" })), h("div", { class: "social-buttons__media" }, h("img", { src: getAssetPath(`./assets/images/${'google.svg'}`), class: "social-buttons__image", alt: "login via google" })), h("div", { class: "social-buttons__media" }, h("img", { src: getAssetPath(`./assets/images/${'fb.svg'}`), class: "social-buttons__image", alt: "login via facebook" }))))));
       case 'tfa/setup':

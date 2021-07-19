@@ -7,6 +7,7 @@ export declare class IdentifoForm {
   appId: string;
   url: string;
   theme: 'dark' | 'light';
+  scopes: string;
   auth: IdentifoAuth;
   username: string;
   password: string;

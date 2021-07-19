@@ -127,7 +127,7 @@ func (ar *Router) ResetPassword() http.HandlerFunc {
 		}
 
 		// Refetch user with new password hash.
-		if user, err = ar.userStorage.UserByNamePassword(user.Username, d.Password); err != nil {
+		if user, err = ar.userStorage.UserByUsername(user.Username); err != nil {
 			ar.Error(w, ErrorAPIRequestBodyOldPasswordInvalid, http.StatusBadRequest, err.Error(), "ResetPassword.RefetchUser")
 			return
 		}
