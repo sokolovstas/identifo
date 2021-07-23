@@ -42,8 +42,8 @@ type WebHandlers struct {
 // These paths describe directories with static files.
 // They are relative to the folder specified in the configuration file.
 const (
-	AdminPanelBuildPath = "./admin_panel/build"
-	WebBuildPath        = "./web/build"
+	AdminPanelBuildPath = "./admin_panel"
+	WebBuildPath        = "./web"
 	PagesPath           = "./html"
 	EmailTemplatesPath  = "./email_templates"
 	AppleFilesPath      = "./apple"

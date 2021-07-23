@@ -131,6 +131,8 @@ func NewRouter(logger *log.Logger, as model.AppStorage, us model.UserStorage, ts
 
 	ar.tokenPayloadServices = make(map[string]model.TokenPayloadProvider)
 
+	ar.middleware.Use(ar.RemoveTrailingSlash())
+
 	if ar.cors != nil {
 		ar.middleware.Use(ar.cors)
 	}

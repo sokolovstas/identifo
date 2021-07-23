@@ -94,7 +94,7 @@ func (us *UserStorage) UserByEmail(email string) (model.User, error) {
 	return model.User{}, errors.New("not implemented")
 }
 
-func (us *UserStorage) userIDByFederatedID(provider model.FederatedIdentityProvider, id string) (string, error) {
+func (us *UserStorage) userIDByFederatedID(provider string, id string) (string, error) {
 	fid := string(provider) + ":" + id
 	result, err := us.db.C.GetItem(&dynamodb.GetItemInput{
 		TableName: aws.String(usersFederatedIDTableName),
@@ -122,7 +122,7 @@ func (us *UserStorage) userIDByFederatedID(provider model.FederatedIdentityProvi
 }
 
 // UserByFederatedID returns user by federated ID.
-func (us *UserStorage) UserByFederatedID(provider model.FederatedIdentityProvider, id string) (model.User, error) {
+func (us *UserStorage) UserByFederatedID(provider string, id string) (model.User, error) {
 	userID, err := us.userIDByFederatedID(provider, id)
 	if err != nil {
 		return model.User{}, err
@@ -343,7 +343,7 @@ func (us *UserStorage) AddUserWithPassword(user model.User, password, role strin
 }
 
 // AddUserWithFederatedID adds new user with social ID.
-func (us *UserStorage) AddUserWithFederatedID(provider model.FederatedIdentityProvider, federatedID, role string) (model.User, error) {
+func (us *UserStorage) AddUserWithFederatedID(user model.User, provider string, federatedID, role string) (model.User, error) {
 	_, err := us.userIDByFederatedID(provider, federatedID)
 	if err != nil && err != model.ErrUserNotFound {
 		log.Println("error getting user by name: ", err)
@@ -352,25 +352,16 @@ func (us *UserStorage) AddUserWithFederatedID(provider model.FederatedIdentityPr
 		return model.User{}, model.ErrorUserExists
 	}
 
-	fid := string(provider) + ":" + federatedID
+	user.ID = xid.New().String()
+	user.Active = true
+	user.AccessRole = role
+	fid := user.AddFederatedId(provider, federatedID)
 
-	user, err := us.userIdxByName(fid)
-	if err != nil && err != model.ErrUserNotFound {
-		log.Println("error getting user by name: ", err)
-		return model.User{}, err
-	} else if err == model.ErrUserNotFound {
-		// no such user, let's create it
-		uData := model.User{Username: fid, AccessRole: role, Active: true}
-		u, creationErr := us.AddNewUser(uData, "")
-		if creationErr != nil {
-			log.Println("error adding new user: ", creationErr)
-			return model.User{}, creationErr
-		}
-		user = &userIndexByNameData{ID: u.ID, Username: u.Username}
+	user, creationErr := us.AddNewUser(user, "")
+	if creationErr != nil {
+		log.Println("error adding new user: ", creationErr)
+		return model.User{}, creationErr
 	}
-
-	// Nil error means that there already is a user with this federated id.
-	// The only possible way for that is faulty creation of the federated accout before.
 
 	fedData := federatedUserID{FederatedID: fid, UserID: user.ID}
 	fedInputData, err := dynamodbattribute.MarshalMap(fedData)
@@ -387,13 +378,8 @@ func (us *UserStorage) AddUserWithFederatedID(provider model.FederatedIdentityPr
 		log.Println("error putting item: ", err)
 		return model.User{}, ErrorInternalError
 	}
-	// just in case
-	if user == nil {
-		return model.User{}, ErrorInternalError
-	}
 
-	udata := model.User{ID: user.ID, Username: user.Username, Active: true}
-	return udata, nil
+	return user, nil
 }
 
 // UpdateUser updates user in DynamoDB storage.
