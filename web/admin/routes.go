@@ -13,27 +13,27 @@ func (ar *Router) initRoutes() {
 		panic("Empty admin router")
 	}
 
-	ar.router.Path(`/{me:me/?}`).Handler(negroni.New(
+	ar.router.Path("/me").Handler(negroni.New(
 		negroni.WrapFunc(ar.IsLoggedIn()),
 	)).Methods("GET")
 
-	ar.router.Path(`/{login:login/?}`).Handler(negroni.New(
+	ar.router.Path("/login").Handler(negroni.New(
 		negroni.WrapFunc(ar.Login()),
 	)).Methods("POST")
 
-	ar.router.Path(`/{logout:logout/?}`).Handler(negroni.New(
+	ar.router.Path("/logout").Handler(negroni.New(
 		negroni.WrapFunc(ar.Logout()),
 	)).Methods("POST")
 
-	ar.router.Path(`/{restart:restart/?}`).Handler(negroni.New(
+	ar.router.Path("/restart").Handler(negroni.New(
 		negroni.WrapFunc(ar.RestartServer()),
 	)).Methods("POST")
 
-	ar.router.Path(`/{apps:apps/?}`).Handler(negroni.New(
+	ar.router.Path("/apps").Handler(negroni.New(
 		ar.Session(),
 		negroni.WrapFunc(ar.FetchApps()),
 	)).Methods("GET")
-	ar.router.Path(`/{apps:apps/?}`).Handler(negroni.New(
+	ar.router.Path("/apps").Handler(negroni.New(
 		ar.Session(),
 		negroni.WrapFunc(ar.CreateApp()),
 	)).Methods("POST")
@@ -47,11 +47,11 @@ func (ar *Router) initRoutes() {
 	apps.Path("/{id:[a-zA-Z0-9]+}").HandlerFunc(ar.UpdateApp()).Methods("PUT")
 	apps.Path("/{id:[a-zA-Z0-9]+}").HandlerFunc(ar.DeleteApp()).Methods("DELETE")
 
-	ar.router.Path(`/{users:users/?}`).Handler(negroni.New(
+	ar.router.Path("/users").Handler(negroni.New(
 		ar.Session(),
 		negroni.WrapFunc(ar.FetchUsers()),
 	)).Methods("GET")
-	ar.router.Path(`/{users:users/?}`).Handler(negroni.New(
+	ar.router.Path("/users").Handler(negroni.New(
 		ar.Session(),
 		negroni.WrapFunc(ar.CreateUser()),
 	)).Methods("POST")
@@ -65,7 +65,7 @@ func (ar *Router) initRoutes() {
 	users.Path("/{id:[a-zA-Z0-9]+}").HandlerFunc(ar.UpdateUser()).Methods("PUT")
 	users.Path("/{id:[a-zA-Z0-9]+}").HandlerFunc(ar.DeleteUser()).Methods("DELETE")
 
-	ar.router.Path(`/{settings:settings/?}`).Handler(negroni.New(
+	ar.router.Path("/settings").Handler(negroni.New(
 		ar.Session(),
 		negroni.WrapFunc(ar.FetchServerSettings()),
 	)).Methods("GET")
@@ -101,7 +101,7 @@ func (ar *Router) initRoutes() {
 	settings.Path("/services").HandlerFunc(ar.FetchExternalServicesSettings()).Methods("GET")
 	settings.Path("/services").HandlerFunc(ar.UpdateExternalServicesSettings()).Methods("PUT")
 
-	ar.router.Path(`/{invites:invites/?}`).Handler(negroni.New(
+	ar.router.Path("/invites").Handler(negroni.New(
 		ar.Session(),
 		negroni.WrapFunc(ar.FetchInvites()),
 	)).Methods("GET")
@@ -121,9 +121,9 @@ func (ar *Router) initRoutes() {
 		negroni.Wrap(static),
 	))
 
-	static.Path(`/{template:template/?}`).HandlerFunc(ar.GetStringifiedFile()).Methods("GET")
-	static.Path(`/{template:template/?}`).HandlerFunc(ar.UploadStringifiedFile()).Methods("PUT")
+	static.Path("/template").HandlerFunc(ar.GetStringifiedFile()).Methods("GET")
+	static.Path("/template").HandlerFunc(ar.UploadStringifiedFile()).Methods("PUT")
 
-	static.Path(`/{uploads/keys:uploads/keys/?}`).HandlerFunc(ar.UploadJWTKeys()).Methods("POST")
-	static.Path(`/{uploads/apple-domain-association:uploads/apple-domain-association/?}`).HandlerFunc(ar.UploadADDAFile()).Methods("POST")
+	static.Path("/uploads/keys").HandlerFunc(ar.UploadJWTKeys()).Methods("POST")
+	static.Path("/uploads/apple-domain-association").HandlerFunc(ar.UploadADDAFile()).Methods("POST")
 }

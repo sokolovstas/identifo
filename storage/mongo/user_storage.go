@@ -98,7 +98,7 @@ func (us *UserStorage) UserByEmail(email string) (model.User, error) {
 }
 
 // UserByFederatedID returns user by federated ID.
-func (us *UserStorage) UserByFederatedID(provider model.FederatedIdentityProvider, id string) (model.User, error) {
+func (us *UserStorage) UserByFederatedID(provider string, id string) (model.User, error) {
 	sid := string(provider) + ":" + id
 
 	ctx, cancel := context.WithTimeout(context.Background(), us.timeout)
@@ -230,21 +230,18 @@ func (us *UserStorage) AddUserWithPassword(user model.User, password, role strin
 }
 
 // AddUserWithFederatedID adds new user with social ID.
-func (us *UserStorage) AddUserWithFederatedID(provider model.FederatedIdentityProvider, federatedID, role string) (model.User, error) {
+func (us *UserStorage) AddUserWithFederatedID(user model.User, provider string, federatedID, role string) (model.User, error) {
 	// If there is no error, it means user already exists.
 	if _, err := us.UserByFederatedID(provider, federatedID); err == nil {
 		return model.User{}, model.ErrorUserExists
 	}
 
-	sid := string(provider) + ":" + federatedID
-	u := model.User{
-		ID:           primitive.NewObjectID().Hex(),
-		Active:       true,
-		Username:     sid,
-		AccessRole:   role,
-		FederatedIDs: []string{sid},
-	}
-	return us.AddNewUser(u, "")
+	user.ID = primitive.NewObjectID().Hex()
+	user.Active = true
+	user.AccessRole = role
+	user.AddFederatedId(provider, federatedID)
+
+	return us.AddNewUser(user, "")
 }
 
 // UpdateUser updates user in MongoDB storage.

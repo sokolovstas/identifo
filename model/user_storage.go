@@ -33,8 +33,8 @@ type UserStorage interface {
 	DetachDeviceToken(token string) error
 	UserByUsername(username string) (User, error)
 	UserExists(name string) bool
-	UserByFederatedID(provider FederatedIdentityProvider, id string) (User, error)
-	AddUserWithFederatedID(provider FederatedIdentityProvider, id, role string) (User, error)
+	UserByFederatedID(provider string, id string) (User, error)
+	AddUserWithFederatedID(user User, provider string, id, role string) (User, error)
 	UpdateUser(userID string, newUser User) (User, error)
 	ResetPassword(id, password string) error
 	CheckPassword(id, password string) error
@@ -80,6 +80,17 @@ func (u User) Sanitized() User {
 	u.TFAInfo.HOTPCounter = 0
 	u.TFAInfo.HOTPExpiredAt = time.Time{}
 	return u
+}
+
+func (u User) AddFederatedId(provider string, id string) string {
+	fid := provider + ":" + id
+	for _, ele := range u.FederatedIDs {
+		if ele == fid {
+			return fid
+		}
+	}
+	u.FederatedIDs = append(u.FederatedIDs, fid)
+	return fid
 }
 
 // SanitizedTFA returns data structure with masked sensitive data

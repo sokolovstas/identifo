@@ -4,7 +4,7 @@ import (
 	"context"
 
 	"github.com/madappgang/identifo/configuration/storage/etcd"
-	"go.etcd.io/etcd/clientv3"
+	"go.etcd.io/etcd/client/v3"
 )
 
 // ConfigurationWatcher wraps etcd client.

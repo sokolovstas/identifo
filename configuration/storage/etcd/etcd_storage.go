@@ -11,7 +11,7 @@ import (
 	keyStorageS3 "github.com/madappgang/identifo/configuration/key_storage/s3"
 	ijwt "github.com/madappgang/identifo/jwt"
 	"github.com/madappgang/identifo/model"
-	"go.etcd.io/etcd/clientv3"
+	"go.etcd.io/etcd/client/v3"
 )
 
 const (
