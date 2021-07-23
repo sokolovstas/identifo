@@ -16,6 +16,7 @@ services:
       - ./server-config.yaml:/root/server-config.yaml
       - ./jwt/test_artifacts:/root/jwt/test_artifacts
       - ./static/:/root/static/
+      - ./db.db:/root/db.db
 
 networks:
   identifo:

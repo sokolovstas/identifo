@@ -33,6 +33,8 @@ type AuthResponse struct {
 	User         model.User `json:"user,omitempty" bson:"user,omitempty"`
 	Require2FA   bool       `json:"require_2fa" bson:"require_2fa"`
 	Enabled2FA   bool       `json:"enabled_2fa" bson:"enabled_2fa"`
+	CallbackUrl  string     `json:"callback_url,omitempty" bson:"callback_url,omitempty"`
+	Scopes       []string   `json:"scopes,omitempty" bson:"scopes,omitempty"`
 }
 
 type loginData struct {

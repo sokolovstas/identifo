@@ -71,12 +71,12 @@ func (us *UserStorage) AddUserWithPassword(user model.User, password, role strin
 }
 
 // UserByFederatedID returns randomly generated user.
-func (us *UserStorage) UserByFederatedID(provider model.FederatedIdentityProvider, id string) (model.User, error) {
+func (us *UserStorage) UserByFederatedID(provider string, id string) (model.User, error) {
 	return randUser(), nil
 }
 
 // AddUserWithFederatedID returns randomly generated user.
-func (us *UserStorage) AddUserWithFederatedID(provider model.FederatedIdentityProvider, id, role string) (model.User, error) {
+func (us *UserStorage) AddUserWithFederatedID(user model.User, provider string, id, role string) (model.User, error) {
 	return randUser(), nil
 }
 

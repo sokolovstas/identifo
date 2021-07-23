@@ -146,7 +146,7 @@ func (us *UserStorage) DeleteUser(id string) error {
 }
 
 // UserByFederatedID returns user by federated ID.
-func (us *UserStorage) UserByFederatedID(provider model.FederatedIdentityProvider, id string) (model.User, error) {
+func (us *UserStorage) UserByFederatedID(provider string, id string) (model.User, error) {
 	var res model.User
 	sid := string(provider) + ":" + id
 
@@ -314,39 +314,18 @@ func (us *UserStorage) AddNewUser(user model.User, password string) (model.User,
 }
 
 // AddUserWithFederatedID adds new user with social ID.
-func (us *UserStorage) AddUserWithFederatedID(provider model.FederatedIdentityProvider, federatedID, role string) (model.User, error) {
-	sid := string(provider) + ":" + federatedID
+func (us *UserStorage) AddUserWithFederatedID(user model.User, provider string, federatedID, role string) (model.User, error) {
 	// Using user name as a key. If there is no error, it means user already exists.
 	if _, err := us.UserByFederatedID(provider, federatedID); err == nil {
 		return model.User{}, model.ErrorUserExists
 	}
 
-	user := model.User{
-		ID:          sid, // not sure it's a good idea
-		Active:      true,
-		Username:    sid,
-		AccessRole:  role,
-		NumOfLogins: 0,
-	}
+	user.ID = xid.New().String()
+	user.Active = true
+	user.AccessRole = role
+	user.AddFederatedId(provider, federatedID)
 
-	err := us.db.Update(func(tx *bolt.Tx) error {
-		data, err := json.Marshal(user)
-		if err != nil {
-			return err
-		}
-
-		ub := tx.Bucket([]byte(UserBucket))
-		if err := ub.Put([]byte(user.ID), data); err != nil {
-			return err
-		}
-
-		usib := tx.Bucket([]byte(UserBySocialIDBucket))
-		return usib.Put([]byte(sid), []byte(user.ID))
-	})
-	if err != nil {
-		return model.User{}, err
-	}
-	return user, nil
+	return us.AddNewUser(user, "")
 }
 
 // AddUserWithPassword creates new user and saves it in the database.
@@ -590,5 +569,12 @@ func (us *UserStorage) UpdateUserBuckets(tx *bolt.Tx, user model.User) error {
 			return err
 		}
 	}
+	for _, fid := range user.FederatedIDs {
+		usib := tx.Bucket([]byte(UserBySocialIDBucket))
+		if err := usib.Put([]byte(fid), []byte(user.ID)); err != nil {
+			return err
+		}
+	}
+
 	return nil
 }
