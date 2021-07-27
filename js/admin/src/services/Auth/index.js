@@ -1,10 +1,8 @@
 import { pause, getError } from '~/utils';
 
-const createAuthService = ({ httpClient }) => {
-  const baseUrl = process.env.API_URL;
-
+const createAuthService = ({ httpClient, apiUrl }) => {
   const login = async (email, password) => {
-    const url = `${baseUrl}/login`;
+    const url = `${apiUrl}/login`;
 
     try {
       const response = await httpClient.post(url, { email, password });
@@ -16,12 +14,12 @@ const createAuthService = ({ httpClient }) => {
   };
 
   const logout = () => {
-    const url = `${baseUrl}/logout`;
+    const url = `${apiUrl}/logout`;
     return httpClient.post(url);
   };
 
   const checkAuthState = () => {
-    const url = `${baseUrl}/me`;
+    const url = `${apiUrl}/me`;
 
     return new Promise((resolve) => {
       httpClient.get(url)
