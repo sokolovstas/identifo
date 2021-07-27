@@ -11,7 +11,6 @@ const env = {
   MOCK_API: process.env.MOCK_API,
   BASE_URL: process.env.BASE_URL,
   ASSETS_PATH: process.env.ASSETS_PATH,
-  API_URL: process.env.API_URL,
 };
 
 const BUILD_FOLDER = 'build';
