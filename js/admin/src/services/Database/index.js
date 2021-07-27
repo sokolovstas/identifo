@@ -1,6 +1,4 @@
-import { apiUrl } from '../../../config.json';
-
-const createDatabaseService = ({ httpClient }) => {
+const createDatabaseService = ({ httpClient, apiUrl }) => {
   const testConnection = async (settings) => {
     const url = `${apiUrl}/settings/storage/test`;
     const { data } = await httpClient.post(url, settings);

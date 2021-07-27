@@ -1,6 +1,4 @@
-import { apiUrl } from '../../../config.json';
-
-const createAppleService = ({ httpClient }) => {
+const createAppleService = ({ httpClient, apiUrl }) => {
   const uploadDevDomainAssociationFile = (file) => {
     const data = new FormData();
     const url = `${apiUrl}/static/uploads/apple-domain-association`;

@@ -1,10 +1,9 @@
 import { toDeepCase } from '~/utils/apiMapper';
-import { apiUrl } from '../../../config.json';
 
 const CAMEL_CASE = 'camel';
 const SNAKE_CASE = 'snake';
 
-const createSettingsService = ({ httpClient }) => {
+const createSettingsService = ({ httpClient, apiUrl }) => {
   const fetchLoginSettings = async () => {
     const url = `${apiUrl}/settings/login`;
     const { data } = await httpClient.get(url);

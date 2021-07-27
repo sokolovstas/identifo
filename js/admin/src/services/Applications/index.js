@@ -1,6 +1,4 @@
-import { apiUrl } from '../../../config.json';
-
-const createApplicationService = ({ httpClient }) => {
+const createApplicationService = ({ httpClient, apiUrl }) => {
   const fetchApplications = async () => {
     const url = `${apiUrl}/apps`;
     const { data = [] } = await httpClient.get(url);

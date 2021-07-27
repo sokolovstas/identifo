@@ -1,6 +1,4 @@
-import { apiUrl } from '../../../config.json';
-
-const createStaticService = ({ httpClient }) => {
+const createStaticService = ({ httpClient, apiUrl }) => {
   const fetchStaticFile = async (name, ext = 'html') => {
     const url = `${apiUrl}/static/template?name=${name}&ext=${ext}`;
     const response = await httpClient.get(url);

@@ -1,7 +1,6 @@
 import { pause, getError } from '~/utils';
-import { apiUrl } from '../../../config.json';
 
-const createAuthService = ({ httpClient }) => {
+const createAuthService = ({ httpClient, apiUrl }) => {
   const login = async (email, password) => {
     const url = `${apiUrl}/login`;
 

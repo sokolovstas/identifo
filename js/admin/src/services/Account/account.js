@@ -1,7 +1,6 @@
 import { toDeepCase } from '~/utils/apiMapper';
-import { apiUrl } from '../../../config.json';
 
-const createAccountService = ({ httpClient }) => {
+const createAccountService = ({ httpClient, apiUrl }) => {
   const fetchSettings = async () => {
     const url = `${apiUrl}/settings/account`;
     const { data } = await httpClient.get(url);

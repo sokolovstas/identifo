@@ -1,7 +1,6 @@
 import { format as formatUrl } from 'url';
-import { apiUrl } from '../../../config.json';
 
-const createUserService = ({ httpClient }) => {
+const createUserService = ({ httpClient, apiUrl }) => {
   const fetchUsers = async (filters = {}) => {
     const { search } = filters;
     const url = formatUrl({
