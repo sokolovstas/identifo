@@ -7,12 +7,14 @@ import NotFoundScreen from './NotFoundScreen';
 import ensureAuthState, { SIGNED_IN, SIGNED_OUT } from './ensureAuthState';
 import { ServicesContext } from '../hooks/useServices';
 
+
 import './Root.css';
+import { baseUrl } from '../../config.json';
 
 const Root = ({ store, services }) => (
   <Provider store={store}>
     <ServicesContext.Provider value={services}>
-      <BrowserRouter basename={process.env.BASE_URL}>
+      <BrowserRouter basename={baseUrl}>
         <Switch>
           <Route
             exact

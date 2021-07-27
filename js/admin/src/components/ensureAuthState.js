@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { useSelector  } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { Redirect, withRouter } from 'react-router-dom';
 
 const SIGNED_IN = true;

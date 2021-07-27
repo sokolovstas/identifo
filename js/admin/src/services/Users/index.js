@@ -1,12 +1,11 @@
 import { format as formatUrl } from 'url';
+import { apiUrl } from '../../../config.json';
 
 const createUserService = ({ httpClient }) => {
-  const baseUrl = process.env.API_URL;
-
   const fetchUsers = async (filters = {}) => {
     const { search } = filters;
     const url = formatUrl({
-      pathname: `${baseUrl}/users`,
+      pathname: `${apiUrl}/users`,
       query: {
         search,
       },
@@ -17,28 +16,28 @@ const createUserService = ({ httpClient }) => {
   };
 
   const postUser = async (user) => {
-    const url = `${baseUrl}/users`;
+    const url = `${apiUrl}/users`;
     const { data } = await httpClient.post(url, user);
 
     return data;
   };
 
   const alterUser = async (id, changes) => {
-    const url = `${baseUrl}/users/${id}`;
+    const url = `${apiUrl}/users/${id}`;
     const { data } = await httpClient.put(url, changes);
 
     return data;
   };
 
   const fetchUserById = async (id) => {
-    const url = `${baseUrl}/users/${id}`;
+    const url = `${apiUrl}/users/${id}`;
     const { data } = await httpClient.get(url);
 
     return data;
   };
 
   const deleteUserById = async (id) => {
-    const url = `${baseUrl}/users/${id}`;
+    const url = `${apiUrl}/users/${id}`;
     const { data } = await httpClient.delete(url);
 
     return data;
