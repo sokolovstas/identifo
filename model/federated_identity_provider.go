@@ -40,14 +40,14 @@ var FederatedProviders = map[string]FederatedProvider{
 			return nil, err
 		}
 		return apple.New(params["ClientId"], *secret, redirectURL, nil, scopes...), nil
-	}, Params: []string{"ClientId", "PKCS8PrivateKey", "TeamId", "KeyId"}},
+	}, Params: []string{"ClientId", "PKCS8PrivateKey,textarea", "TeamId", "KeyId"}},
 }
 
 type FederatedProvider struct {
-	New           interface{}
-	Name          string   `bson:"string,omitempty" json:"string,omitempty"`
-	DefaultScopes []string `bson:"default_scopes,omitempty" json:"default_scopes,omitempty"`
-	Params        []string `bson:"params,omitempty" json:"params,omitempty"`
+	New           interface{} `bson:"-" json:"-"`
+	Name          string      `bson:"string,omitempty" json:"string,omitempty"`
+	DefaultScopes []string    `bson:"default_scopes,omitempty" json:"default_scopes,omitempty"`
+	Params        []string    `bson:"params,omitempty" json:"params,omitempty"`
 }
 
 type FederatedProviderSettings struct {

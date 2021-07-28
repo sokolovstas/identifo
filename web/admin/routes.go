@@ -33,6 +33,10 @@ func (ar *Router) initRoutes() {
 		ar.Session(),
 		negroni.WrapFunc(ar.FetchApps()),
 	)).Methods("GET")
+	ar.router.Path("/federated-providers").Handler(negroni.New(
+		ar.Session(),
+		negroni.WrapFunc(ar.FederatedProvidersList()),
+	)).Methods("GET")
 	ar.router.Path("/apps").Handler(negroni.New(
 		ar.Session(),
 		negroni.WrapFunc(ar.CreateApp()),
