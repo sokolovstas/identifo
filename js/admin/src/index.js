@@ -10,4 +10,4 @@ const markup = (
   <Root store={store} services={services} />
 );
 
-ReactDOM.render(markup, document.getElementById('root'));
+ReactDOM.render((markup), document.getElementById('root'));

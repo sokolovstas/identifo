@@ -19,12 +19,6 @@ const LoginForm = () => {
   };
 
   React.useEffect(() => {
-    fetch('config.json')
-      .then(r => r.json())
-      .then(r => localStorage.setItem('identifo-admin-api-url', r.apiUrl));
-  }, []);
-
-  React.useEffect(() => {
     dispatch(checkAuthState());
   }, []);
 

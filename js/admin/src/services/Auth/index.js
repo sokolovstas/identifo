@@ -1,8 +1,8 @@
 import { pause, getError } from '~/utils';
 
-const createAuthService = ({ httpClient, apiUrl }) => {
+const createAuthService = ({ httpClient }) => {
   const login = async (email, password) => {
-    const url = `${apiUrl}/login`;
+    const url = `${httpClient.getApiUrl()}/login`;
 
     try {
       const response = await httpClient.post(url, { email, password });
@@ -14,12 +14,12 @@ const createAuthService = ({ httpClient, apiUrl }) => {
   };
 
   const logout = () => {
-    const url = `${apiUrl}/logout`;
+    const url = `${httpClient.getApiUrl()}/logout`;
     return httpClient.post(url);
   };
 
   const checkAuthState = () => {
-    const url = `${apiUrl}/me`;
+    const url = `${httpClient.getApiUrl()}/me`;
 
     return new Promise((resolve) => {
       httpClient.get(url)

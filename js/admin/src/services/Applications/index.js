@@ -1,46 +1,46 @@
-const createApplicationService = ({ httpClient, apiUrl }) => {
-  const fetchApplications = async () => {
-    const url = `${apiUrl}/apps`;
-    const { data = [] } = await httpClient.get(url);
+const createApplicationService = ({ httpClient }) => {
+    const fetchApplications = async () => {
+        const url = `${httpClient.getApiUrl()}/apps`;
+        const { data = [] } = await httpClient.get(url);
 
-    return data;
-  };
+        return data;
+    };
 
-  const fetchApplicationById = async (id) => {
-    const url = `${apiUrl}/apps/${id}`;
-    const { data } = await httpClient.get(url);
+    const fetchApplicationById = async (id) => {
+        const url = `${httpClient.getApiUrl()}/apps/${id}`;
+        const { data } = await httpClient.get(url);
 
-    return data;
-  };
+        return data;
+    };
 
-  const postApplication = async (application) => {
-    const url = `${apiUrl}/apps`;
-    const { data } = await httpClient.post(url, application);
+    const postApplication = async (application) => {
+        const url = `${httpClient.getApiUrl()}/apps`;
+        const { data } = await httpClient.post(url, application);
 
-    return data;
-  };
+        return data;
+    };
 
-  const alterApplication = async (id, changes) => {
-    const url = `${apiUrl}/apps/${id}`;
-    const { data } = await httpClient.put(url, changes);
+    const alterApplication = async (id, changes) => {
+        const url = `${httpClient.getApiUrl()}/apps/${id}`;
+        const { data } = await httpClient.put(url, changes);
 
-    return data;
-  };
+        return data;
+    };
 
-  const deleteApplicationById = async (id) => {
-    const url = `${apiUrl}/apps/${id}`;
-    const { data } = await httpClient.delete(url);
+    const deleteApplicationById = async (id) => {
+        const url = `${httpClient.getApiUrl()}/apps/${id}`;
+        const { data } = await httpClient.delete(url);
 
-    return data;
-  };
+        return data;
+    };
 
-  return Object.freeze({
-    fetchApplications,
-    fetchApplicationById,
-    postApplication,
-    alterApplication,
-    deleteApplicationById,
-  });
+    return Object.freeze({
+        fetchApplications,
+        fetchApplicationById,
+        postApplication,
+        alterApplication,
+        deleteApplicationById,
+    });
 };
 
 export default createApplicationService;

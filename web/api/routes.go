@@ -28,7 +28,7 @@ func (ar *Router) initRoutes() {
 
 	ar.router.HandleFunc("/auth/federated/complete", ar.FederatedLoginComplete()).Methods("GET")
 
-	ar.router.HandleFunc("/ping", ar.HandlePing()).Methods("GET")
+ar.router.HandleFunc("/ping", ar.HandlePing()).Methods("GET")
 
 	auth := mux.NewRouter().PathPrefix("/auth").Subrouter()
 	ar.router.PathPrefix("/auth").Handler(apiMiddlewares.With(

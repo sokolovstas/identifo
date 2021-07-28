@@ -3,6 +3,11 @@ import axios from 'axios';
 axios.defaults.withCredentials = true;
 
 const createHttpClient = () => {
+  let apiUrl = '';
+  fetch('config.json')
+    .then(r => r.json())
+    .then(r => ({ apiUrl } = r));
+
   const middlewares = [];
 
   const applyMiddlewares = (initialRequest = {}) => {
@@ -50,6 +55,7 @@ const createHttpClient = () => {
     put: httpPut,
     delete: httpDelete,
     patch: httpPatch,
+    getApiUrl: () => apiUrl,
     addMiddleware,
     addResponseInterceptor,
   });

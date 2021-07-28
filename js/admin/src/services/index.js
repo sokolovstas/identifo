@@ -17,18 +17,16 @@ import createSettingsServiceMock from './Settings/mock';
 import createAppleServiceMock from './Apple/mock';
 import createStaticServiceMock from './Static/mock';
 
-const apiUrl = localStorage.getItem('identifo-admin-api-url')
-
 const httpClient = createHttpClient();
 
-const authService = createAuthService({ httpClient, apiUrl });
-const databaseService = createDatabaseService({ httpClient, apiUrl });
-const accountService = createAccountService({ httpClient, apiUrl });
-const userService = createUserService({ httpClient, apiUrl });
-const applicationService = createApplicationService({ httpClient, apiUrl });
-const settingsService = createSettingsService({ httpClient, apiUrl });
-const appleService = createAppleService({ httpClient, apiUrl });
-const staticService = createStaticService({ httpClient, apiUrl });
+const authService = createAuthService({ httpClient });
+const databaseService = createDatabaseService({ httpClient });
+const accountService = createAccountService({ httpClient });
+const userService = createUserService({ httpClient });
+const applicationService = createApplicationService({ httpClient });
+const settingsService = createSettingsService({ httpClient });
+const appleService = createAppleService({ httpClient });
+const staticService = createStaticService({ httpClient });
 
 const useMock = process.env.MOCK_API === 'true';
 

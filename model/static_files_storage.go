@@ -33,6 +33,7 @@ type AdminPanelHandlers struct {
 	SrcHandler        http.Handler
 	ManagementHandler http.Handler
 	BuildHandler      http.Handler
+	ConfigHandler     http.Handler
 }
 
 type WebHandlers struct {

@@ -1,41 +1,41 @@
-const createAppleService = ({ httpClient, apiUrl }) => {
-  const uploadDevDomainAssociationFile = (file) => {
-    const data = new FormData();
-    const url = `${apiUrl}/static/uploads/apple-domain-association`;
+const createAppleService = ({ httpClient }) => {
+    const uploadDevDomainAssociationFile = (file) => {
+        const data = new FormData();
+        const url = `${httpClient.getApiUrl()}/static/uploads/apple-domain-association`;
 
-    data.append('file', file);
+        data.append('file', file);
 
-    return httpClient.post(url, data);
-  };
-
-  const uploadAppSiteAssociationFileContents = (fileContent) => {
-    const url = `${apiUrl}/static/template?name=apple-app-site-association`;
-    const body = {
-      contents: fileContent,
+        return httpClient.post(url, data);
     };
 
-    return httpClient.post(url, body);
-  };
+    const uploadAppSiteAssociationFileContents = (fileContent) => {
+        const url = `${httpClient.getApiUrl()}/static/template?name=apple-app-site-association`;
+        const body = {
+            contents: fileContent,
+        };
 
-  const fetchAppSiteAssociationFileContents = async () => {
-    const url = `${window.location.origin}/.well-known/apple-app-site-association`;
-    const { data: blob } = await httpClient.get(url);
-    const fileReader = new FileReader();
+        return httpClient.post(url, body);
+    };
 
-    return new Promise((resolve) => {
-      fileReader.onload = () => {
-        resolve(fileReader.result);
-      };
+    const fetchAppSiteAssociationFileContents = async () => {
+        const url = `${window.location.origin}/.well-known/apple-app-site-association`;
+        const { data: blob } = await httpClient.get(url);
+        const fileReader = new FileReader();
 
-      fileReader.readAsText(blob);
-    });
-  };
+        return new Promise((resolve) => {
+            fileReader.onload = () => {
+                resolve(fileReader.result);
+            };
 
-  return {
-    fetchAppSiteAssociationFileContents,
-    uploadAppSiteAssociationFileContents,
-    uploadDevDomainAssociationFile,
-  };
+            fileReader.readAsText(blob);
+        });
+    };
+
+    return {
+        fetchAppSiteAssociationFileContents,
+        uploadAppSiteAssociationFileContents,
+        uploadDevDomainAssociationFile,
+    };
 };
 
 export default createAppleService;

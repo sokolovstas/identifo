@@ -1,6 +1,7 @@
 const webpack = require('webpack');
 const path = require('path');
 const HtmlPlugin = require('html-webpack-plugin');
+const CopyPlugin = require('copy-webpack-plugin');
 
 const dotenv = require('dotenv')
   .config({ path: path.resolve(__dirname, '../../.env') });
@@ -10,7 +11,6 @@ const env = {
   MOCK_API: process.env.MOCK_API,
   BASE_URL: process.env.BASE_URL,
   ASSETS_PATH: process.env.ASSETS_PATH,
-  API_URL: process.env.API_URL,
 };
 
 module.exports = {
@@ -61,6 +61,9 @@ module.exports = {
       title: 'Identifo Admin',
       template: path.resolve(__dirname, '../..', 'index.template.html'),
     }),
+    new CopyPlugin([{
+      from: 'src/config.json',
+    }]),
     new webpack.DefinePlugin({
       'process.env': JSON.stringify(env),
     }),
