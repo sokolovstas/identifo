@@ -34,12 +34,19 @@ const createApplicationService = ({ httpClient }) => {
         return data;
     };
 
+    const fetchFederatedLoginProviders = async () => {
+        const url = `${httpClient.getApiUrl()}/federated-providers`;
+        const { data } = await httpClient.get(url);
+        return data;
+    };
+
     return Object.freeze({
         fetchApplications,
         fetchApplicationById,
         postApplication,
         alterApplication,
         deleteApplicationById,
+        fetchFederatedLoginProviders,
     });
 };
 

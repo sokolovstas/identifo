@@ -6,6 +6,7 @@ import {
   deleteApplicationById,
   fetchApplicationById,
   resetApplicationError,
+  fetchFederatedProviders,
 } from '~/modules/applications/actions';
 import ActionsButton from '~/components/shared/ActionsButton';
 import { Tabs, Tab } from '~/components/shared/Tabs';
@@ -26,12 +27,14 @@ const EditApplicationView = ({ match, history }) => {
   const id = match.params.appid;
 
   const application = useSelector(s => s.selectedApplication.application);
+  const federatedProviders = useSelector(s => s.applications.federatedProviders);
   const error = useSelector(s => s.selectedApplication.error);
   const [tabIndex, setTabIndex] = React.useState(0);
 
   const fetchData = async () => {
     setProgress(70);
     await dispatch(fetchApplicationById(id));
+    await dispatch(fetchFederatedProviders());
     setProgress(100);
   };
 
@@ -156,6 +159,7 @@ const EditApplicationView = ({ match, history }) => {
 
               {tabIndex === 3 && (
                 <ApplicationFederatedLoginSettings
+                  federatedProviders={federatedProviders}
                   loading={!!progress}
                   application={application}
                   onCancel={handleCancel}

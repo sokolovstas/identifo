@@ -13,35 +13,50 @@ import LoadingIcon from '~/components/icons/LoadingIcon';
 import SaveIcon from '~/components/icons/SaveIcon';
 import WarningIcon from '~/components/icons/WarningIcon.svg';
 import MultipleInput from '~/components/shared/MultipleInput';
+import useNotifications from '~/hooks/useNotifications';
 
 const extractValue = fn => e => fn(e.target.value);
 
 const FederatedLoginSettingsForm = (props) => {
-  const { loading, onSubmit, onCancel } = props;
+  const { loading, onSubmit, onCancel, federatedProviders } = props;
   const application = props.application || {};
-
-  // TODO: replace from server
-  const providers = { apple: { Name: 'Apple' }, facebook: { Name: 'Facebook', default_scopes: ['email'] }, google: { Name: 'Google' } };
 
   const [federatedLoginSettings, setFederatedLoginSettings] = useState({});
 
-  // const { notifyFailure } = useNotifications();
+  const { notifyFailure } = useNotifications();
 
   useEffect(() => {
     setFederatedLoginSettings(application.federated_login_settings || {});
   }, [props.application]);
 
-  const handleInput = (provider, field, value) => {
+  const handleParamsChange = (provider, field, value) => {
+    const params = { ...federatedLoginSettings[provider].params, [field]: value };
+
     setFederatedLoginSettings({
       ...federatedLoginSettings,
-      [provider]: {
-        ...federatedLoginSettings[provider],
-        params: {
-          ...federatedLoginSettings[provider].params,
-          [field]: value,
-        },
-      },
+      [provider]: { ...federatedLoginSettings[provider], params },
     });
+  };
+
+  const handleScopesChange = (provider, value) => {
+    setFederatedLoginSettings({
+      ...federatedLoginSettings,
+      [provider]: { ...federatedLoginSettings[provider], scopes: [...value] },
+    });
+  };
+
+  // Each param contain comma separated options.
+  // For example when param set to "PKCS8PrivateKey,textarea,optional"
+  // need to use textarea control and this param is optional.
+  // Options is unsorted and can be in any order.
+  // First element of comma separated list is always field name.
+  const extractParam = (param) => {
+    const params = param.split(',');
+    return {
+      fieldName: params[0],
+      textarea: !!params.find(p => p === 'textarea'),
+      optional: !!params.find(p => p === 'optional'),
+    };
   };
 
   const toggleProvider = (value) => {
@@ -50,31 +65,37 @@ const FederatedLoginSettingsForm = (props) => {
       return;
     }
 
-    const scopes = providers[value].default_scopes || [];
-    setFederatedLoginSettings({ ...federatedLoginSettings, [value]: { params: {}, scopes } });
-  };
+    // create params fields for current provider
+    const initialParams = Object.fromEntries(federatedProviders[value].params.map(p => [extractParam(p).fieldName, '']));
 
-  // const checkIsEmptyFields = (field) => {
-  //   return (!field.secret || !field.key) || (!field.secret.length || !field.key.length);
-  // };
+    // create initial structure for settings object
+    setFederatedLoginSettings({
+      ...federatedLoginSettings,
+      [value]: {
+        params: { ...initialParams },
+        scopes: [],
+      },
+    });
+  };
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    // const settings = Object.values(federatedLoginSettings);
-    // const isEmptyFields = !!settings.length && !!settings.find(s => checkIsEmptyFields(s));
 
-    // if (isEmptyFields) {
-    //   notifyFailure({
-    //     title: 'Something went wrong',
-    //     text: 'Client key and client secret arguments must be provided!',
-    //   });
-    // }
+    const isSettingsProvided = Object.values(federatedLoginSettings).findIndex((v) => {
+      return Object.values(v.params).includes('');
+    }) < 0;
 
-    // if (!isEmptyFields) {
+    if (!isSettingsProvided) {
+      notifyFailure({
+        title: 'Something went wrong',
+        text: 'All arguments must be provided!',
+      });
+      return;
+    }
+
     onSubmit(update(application, {
       federated_login_settings: federatedLoginSettings,
     }));
-    // }
   };
 
   return (
@@ -90,8 +111,10 @@ const FederatedLoginSettingsForm = (props) => {
         </p>
       </div>
 
-      {Object.entries(providers).map((provider) => {
-        const isActive = provider[0] in federatedLoginSettings;
+      {Object.entries(federatedProviders).map((provider) => {
+        const currentProvider = provider[0];
+
+        const isActive = currentProvider in federatedLoginSettings;
 
         const providerClassName = classnames({
           'iap-apps-form__provider': true,
@@ -99,69 +122,59 @@ const FederatedLoginSettingsForm = (props) => {
         });
 
         return (
-          <div key={provider[0]} className={providerClassName}>
+          <div key={currentProvider} className={providerClassName}>
             <Toggle
-              label={provider[1].Name}
+              label={provider[1].string}
               value={isActive}
-              onChange={() => toggleProvider(provider[0])}
+              onChange={() => toggleProvider(currentProvider)}
             />
+
             {isActive && (
               <>
-                <Field label="Client Key">
-                  <Input
-                    value={federatedLoginSettings[provider[0]].params.ClientId}
-                    autoComplete="off"
-                    placeholder="Enter Client Id"
-                    onChange={extractValue(v => handleInput(provider[0], 'ClientId', v))}
-                  />
-                </Field>
-
-                <Field label="Client Secret">
-                  <Input
-                    value={federatedLoginSettings[provider[0]].params.Secret}
-                    autoComplete="off"
-                    placeholder="Enter Client Secret"
-                    onChange={extractValue(v => handleInput(provider[0], 'Secret', v))}
-                  />
-                </Field>
-                <Field label="PKCS8PrivateKey">
-                  <textarea
-                    value={federatedLoginSettings[provider[0]].params.PKCS8PrivateKey}
-                    onChange={extractValue(v => handleInput(provider[0], 'PKCS8PrivateKey', v))}
-                  />
-                </Field>
-                <Field label="TeamId">
-                  <Input
-                    value={federatedLoginSettings[provider[0]].params.TeamId}
-                    autoComplete="off"
-                    placeholder="Enter TeamId"
-                    onChange={extractValue(v => handleInput(provider[0], 'TeamId', v))}
-                  />
-                </Field>
-                <Field label="KeyId">
-                  <Input
-                    value={federatedLoginSettings[provider[0]].params.KeyId}
-                    autoComplete="off"
-                    placeholder="Enter KeyId"
-                    onChange={extractValue(v => handleInput(provider[0], 'KeyId', v))}
-                  />
-                </Field>
+                {federatedProviders[currentProvider].params.map((param) => {
+                  const { fieldName, textarea } = extractParam(param);
+                  return (
+                    <Field label={fieldName} key={fieldName}>
+                      {!textarea && (
+                        <Input
+                          value={federatedLoginSettings[currentProvider].params[fieldName]}
+                          autoComplete="off"
+                          placeholder={`Enter ${fieldName}`}
+                          onChange={extractValue(v => handleParamsChange(currentProvider, fieldName, v))}
+                        />
+                      )}
+                      {textarea && (
+                        <textarea
+                          value={federatedLoginSettings[currentProvider].params[fieldName]}
+                          autoComplete="off"
+                          placeholder={`Enter ${fieldName}`}
+                          className="iap-login-form__input--textarea iap-login-form__input"
+                          onChange={extractValue(v => handleParamsChange(currentProvider, fieldName, v))}
+                        />
+                      )}
+                    </Field>
+                  );
+                })}
 
                 <Field label="Scopes">
                   <MultipleInput
-                    values={federatedLoginSettings[provider[0]].scopes}
+                    values={federatedLoginSettings[currentProvider].scopes}
                     placeholder="Hit Enter to add scope"
-                    onChange={v => handleInput(provider[0], 'scopes', v)}
+                    onChange={v => handleScopesChange(currentProvider, v)}
                   />
                 </Field>
 
-                <p className="iap-apps-form__text">
-                  Don&#39;t forget to add redirect URI
-                  {` ${window.location.origin}/web/login?appId=${application.id}&provider=${provider[0]} `}
-                  to auth provider settings.
-                </p>
+                <div className="iap-apps-form__note">
+                  <WarningIcon className="iap-apps-form__note-icon" />
+                  <p>
+                    Don&#39;t forget to add redirect URI
+                    {` ${window.location.origin}/web/login?appId=${application.id}&provider=${currentProvider} `}
+                    to auth provider settings.
+                  </p>
+                </div>
               </>
-            )}
+            )
+            }
           </div>
         );
       })}

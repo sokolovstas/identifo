@@ -22,6 +22,10 @@ const fetchByIdAttempt = actionCreator(types.FETCH_APPLICATION_BY_ID_ATTEMPT);
 const fetchByIdSuccess = actionCreator(types.FETCH_APPLICATION_BY_ID_SUCCESS);
 const fetchByIdFailure = actionCreator(types.FETCH_APPLICATION_BY_ID_FAILURE);
 
+const fetchFederatedProvidersAttempt = actionCreator(types.FETCH_FEDERATED_PROVIDERS_ATTEMTP);
+const fetchFederatedProviderssSuccess = actionCreator(types.FETCH_FEDERATED_PROVIDERS_SUCCESS);
+const fetchFederatedProviderssFailure = actionCreator(types.FETCH_FEDERATED_PROVIDERS_FAILURE);
+
 const fetchApplications = () => async (dispatch, _, services) => {
   dispatch(fetchAttempt());
 
@@ -77,6 +81,17 @@ const alterApplication = (id, changes) => async (dispatch, _, services) => {
   }
 };
 
+const fetchFederatedProviders = () => async (dispatch, _, services) => {
+  dispatch(fetchFederatedProvidersAttempt());
+
+  try {
+    const result = await services.applications.fetchFederatedLoginProviders();
+    dispatch(fetchFederatedProviderssSuccess(result));
+  } catch (err) {
+    dispatch(fetchFederatedProviderssFailure(getError(err)));
+  }
+};
+
 const resetApplicationError = actionCreator(types.RESET_APPLICATION_ERROR);
 
 export {
@@ -86,4 +101,5 @@ export {
   alterApplication,
   fetchApplicationById,
   resetApplicationError,
+  fetchFederatedProviders,
 };

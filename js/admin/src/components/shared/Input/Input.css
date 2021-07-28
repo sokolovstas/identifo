@@ -23,6 +23,10 @@
   margin: 4px 0;
 }
 
+.iap-login-form__input--textarea {
+  resize: none;
+}
+
 .iap-login-form__input:focus {
   border: 1px solid #3CA6F5;
 }
